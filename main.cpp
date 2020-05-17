@@ -9,6 +9,8 @@
 #include<stdio.h>
 #include<iostream>
 #include<string>
+#include<math.h>
+#include<cstdio>
 
 //Game Speed
 int FPS = 50;
@@ -37,10 +39,21 @@ int lrIndex2 = 0;
 int car3 = 70;
 int lrIndex3 = 0;
 
+//Bird Left / Right
+int brd = 0;
+int brd2 = 0;
+
+float po = 0.0;
+
 //For Display Text
 const int font1 = (int)GLUT_BITMAP_TIMES_ROMAN_24;
 const int font2 = (int)GLUT_BITMAP_HELVETICA_18;
 const int font3 = (int)GLUT_BITMAP_8_BY_13;
+
+void sound()
+{
+    PlaySound("carstart.wav",NULL,SND_ASYNC|SND_FILENAME);
+}
 
 char s[30];
 void renderBitmapString(float x, float y, void *font, const char *string)
@@ -251,7 +264,9 @@ void startGame()
     glBegin(GL_POLYGON);
     glVertex2f(lrIndex1+26,car1+100);
     glVertex2f(lrIndex1+26,car1+100-7);
-    glVertex2f(lrIndex1+28,car1+100-9);
+    glVertex2f(lrIndex1+27,car1+100-8);
+    glVertex2f(lrIndex1+28,car1+100-7);
+    glVertex2f(lrIndex1+29,car1+100-8);
     glVertex2f(lrIndex1+30,car1+100-7);
     glVertex2f(lrIndex1+30,car1+100);
     glEnd();
@@ -292,9 +307,11 @@ void startGame()
     glColor3f(1.00, 0.00, 0.00);//Car Body
     glBegin(GL_POLYGON);
     glVertex2f(lrIndex2+26,car2+100);
-    glVertex2f(lrIndex2+26,car2+100-7);
+    glVertex2f(lrIndex2+26,car2+100-6);
+    glVertex2f(lrIndex2+27,car2+100-7);
     glVertex2f(lrIndex2+28,car2+100-9);
-    glVertex2f(lrIndex2+30,car2+100-7);
+    glVertex2f(lrIndex2+29,car2+100-7);
+    glVertex2f(lrIndex2+30,car2+100-6);
     glVertex2f(lrIndex2+30,car2+100);
     glEnd();
     car2--;
@@ -343,7 +360,14 @@ void startGame()
     {
         car3 = 0;
         lrIndex3 = lrIndex;
+        po=po+0.1;
     }
+
+    if(po>=1)
+    {
+        po=0.0;
+    }
+
 
     //Kill Check Car;
     if((abs(lrIndex-lrIndex3)<8) && (car3+100<10))
@@ -486,6 +510,51 @@ void firstDesign()
     glVertex2f(32-4, 50-15+10);
     glEnd();
 
+      //Bird 1
+    glBegin(GL_TRIANGLES);
+    glColor3f(0.0, 0.0, 1.0);
+	glVertex2f(brd+0,70);
+	glVertex2f(brd+15,75);
+	glVertex2f(brd+10,70);
+
+	glVertex2f(brd+0,75);
+    glVertex2f(brd+10,70);
+	glVertex2f(brd+15,75);
+
+    glColor3f(1.0, 1.0, 0.0);
+	glVertex2f(brd+18,71);
+    glVertex2f(brd+14,74);
+	glVertex2f(brd+15,75);
+
+	glEnd();
+    brd++;
+    if(brd>=100)
+    {
+        brd = 0;
+    }
+
+    //Bird 2
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 0.0, 0.0);
+	glVertex2f(brd2+20,70);
+	glVertex2f(brd2+35,75);
+	glVertex2f(brd2+30,70);
+
+	glVertex2f(brd2+20,75);
+    glVertex2f(brd2+30,70);
+	glVertex2f(brd2+35,75);
+
+    glColor3f(0.0, 1.0, 1.0);
+	glVertex2f(brd2+38,71);
+    glVertex2f(brd2+34,74);
+	glVertex2f(brd2+35,75);
+
+	glEnd();
+    brd2++;
+    if(brd2>=100)
+    {
+        brd2 = 0;
+    }
 
     //Text Information in First Page
     if(gv==1)
@@ -621,7 +690,7 @@ int main(int argc, char *argv[])
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(500,650);
     glutCreateWindow("Car Game");
-
+    sound();
     glutDisplayFunc(display);
     glutSpecialFunc(spe_key);
     glutKeyboardFunc(processKeys);
